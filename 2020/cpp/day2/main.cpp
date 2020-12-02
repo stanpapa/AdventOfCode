@@ -40,5 +40,23 @@ int main(int argc, char* argv[]) {
   } // entry
 
   std::cout << "Number of valid passwords: " << validPwds << "\n";
+
+  // part 2
+  validPwds = 0;
+  for (const std::string& entry : entries) {
+    size_t pos = entry.find("-");
+    int pos1 = std::stoi(entry.substr(0,pos)) - 1;
+    int pos2 = std::stoi(entry.substr(pos+1,entry.find(" "))) - 1;
+    pos = entry.find(":");
+    std::string letter = entry.substr(pos-1,1);
+    std::string pwd = entry.substr(pos+2, entry.size()-pos-2);
+
+    std::string s_pos1 = pwd.substr(pos1,1);
+    std::string s_pos2 = pwd.substr(pos2,1);
+    if ((s_pos1 == letter || s_pos2 == letter) && s_pos1 != s_pos2) validPwds++;
+  } // entry
+
+  std::cout << "Number of valid passwords: " << validPwds << "\n";
+
  
 } 
