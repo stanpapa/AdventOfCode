@@ -1,7 +1,4 @@
-#include <iostream>
-#include <fstream>
-
-#include <vector>
+#include "../utils.h"
 
 int main(int argc, char* argv[]) {
 
@@ -11,14 +8,8 @@ int main(int argc, char* argv[]) {
   }
 
   // read input from file
-  std::string fname = std::string(argv[1]);
   std::vector<int> entries;
-  std::ifstream f(fname);
-  std::string line;
-  while (getline(f, line)) {
-    entries.push_back(std::stoi(line));
-  }
-  f.close();
+  readInput(std::string(argv[1]), entries);
 
 
   // part 1

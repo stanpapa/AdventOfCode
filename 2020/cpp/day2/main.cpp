@@ -1,7 +1,4 @@
-#include <iostream>
-#include <fstream>
-
-#include <vector>
+#include "../utils.h"
 
 int main(int argc, char* argv[]) {
 
@@ -10,17 +7,9 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
 
+  // read input
   std::vector<std::string> entries;
-  // read input from file
-  {
-    std::string fname = std::string(argv[1]);
-    std::ifstream f(fname);
-    std::string line;
-    while (getline(f, line)) {
-      entries.push_back(line);
-    }
-    f.close();
-  }
+  readInput(std::string(argv[1]), entries);
 
   int validPwds = 0;
   // part 1
