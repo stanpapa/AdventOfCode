@@ -17,3 +17,9 @@ void readInput(const std::string& fname, std::vector<std::string>& input) {
   }
   f.close();
 }
+
+void print(const std::vector<std::string>& vec) {
+  for (const std::string& s : vec) {
+    std::cout << s << "\n";
+  }
+}

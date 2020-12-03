@@ -10,4 +10,6 @@
 void readInput(const std::string& fname, std::vector<int>& input);
 void readInput(const std::string& fname, std::vector<std::string>& input);
 
+void print(const std::vector<std::string>& vec);
+
 #endif
