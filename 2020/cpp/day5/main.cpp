@@ -28,6 +28,9 @@ int determinePosition(std::string& s, int& min, int& max) {
   } else if (instruction == 'B' || instruction == 'R') {
     int newMin = min + middle + 1;
     return determinePosition(s, newMin, max);
+  } else {
+    std::cout << "Unknown instruction. ABORT.\n";
+    exit(1);
   }
 }
 
