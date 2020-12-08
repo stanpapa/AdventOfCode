@@ -2,6 +2,20 @@
 
 #include <set>
 
+bool executeInstr(const std::vector<std::string>& instr, int& num, int& acc) {
+  if (instr[0] == "nop") {
+    return true;
+  } else if (instr[0] == "acc") {
+    acc += std::stoi(instr[1]);
+  } else if (instr[0] == "jmp") {
+    num += std::stoi(instr[1]) - 1; // -1 since the for loop also does i++
+  } else {
+    std::cerr << "Instruction not recognized! ABORT.\n";
+    exit(1);
+  }
+  return false;
+}
+
 int main(int argc, char* argv[]) {
 
   if (argc != 2) {
@@ -23,16 +37,8 @@ int main(int argc, char* argv[]) {
     // add instruction number to seen instructions
     executedInstructions.insert(i);
     std::vector<std::string> tmp = split(input[i]);
-    // execute command
-    if (tmp[0] == "nop") {
-      continue;
-    } else if (tmp[0] == "acc") {
-      acc += std::stoi(tmp[1]);
-    } else if (tmp[0] == "jmp") {
-      i += std::stoi(tmp[1]) - 1; // -1 since the for loop also does i++
-    } else {
-      std::cerr << "Instruction not recognized! ABORT.\n";
-    }
+    // execute instruction
+    if (executeInstr(tmp, i, acc)) continue;
   }
   std::cout << "Answer Part 1: " << acc << "\n";
 
@@ -50,8 +56,10 @@ int main(int argc, char* argv[]) {
       // break out of (possible) infinite loop
       if (executedInstructions.find(j) != executedInstructions.end()) break;
   
+      // add instruction number to seen instructions
       executedInstructions.insert(j);
       std::vector<std::string> tmp = split(input[j]);
+
       // swap a single instruction
       if (i == j) {
         if (tmp[0] == "nop") {
@@ -60,16 +68,8 @@ int main(int argc, char* argv[]) {
           tmp[0] = "nop";
         }
       }
-      if (tmp[0] == "nop") {
-        continue;
-      } else if (tmp[0] == "acc") {
-        acc += std::stoi(tmp[1]);
-      } else if (tmp[0] == "jmp") {
-        j += std::stoi(tmp[1]) - 1; // -1 since the for loop also does j++
-      } else {
-        std::cerr << "Instruction not recognized! ABORT.\n";
-      }
-
+      // execute instruction
+      if (executeInstr(tmp, j, acc)) continue;
     }
     if (foundCorrectInstructions) break;
   }
