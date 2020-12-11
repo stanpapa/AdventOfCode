@@ -1,2 +1,2 @@
 default:
-	c++ -std=c++11 main.cpp ../utils.cpp
+	c++ -std=c++17 main.cpp ../utils.cpp
