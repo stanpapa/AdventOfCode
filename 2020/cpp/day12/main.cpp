@@ -9,37 +9,43 @@
 const static std::regex rgx("[NSEWLRF]|[0-9]+");
 
 /**
- *  Rotate using linear algebra. This breaks down if we do not rotate with
+ *  Rotate using rotation matrix. This breaks down if we do not rotate with
  *  a multiple of 90 degrees (because of int)
  */
-void rotateShip(std::pair<int, int>& direction, const int& value, const int& factor) {
-  int x_dir_old = direction.first;
-  int y_dir_old = direction.second;
-  direction.first = x_dir_old * cos(value*PI/180) - factor * y_dir_old * sin(value*PI/180);
-  direction.second = factor * x_dir_old * sin(value*PI/180) + y_dir_old * cos(value*PI/180);
+void rotateVector(std::pair<int, int>& vector, const int& value, const int& factor) {
+  int x = vector.first;
+  int y = vector.second;
+  vector.first  = round(         x * cos(value*PI/180) - factor * y * sin(value*PI/180));
+  vector.second = round(factor * x * sin(value*PI/180) +          y * cos(value*PI/180));
 }
 
-int navigate(const std::vector<std::pair<char,int>>& instructions) {
-  std::pair<int, int> direction = {1, 0}; // we start facing east
+int navigate(const std::vector<std::pair<char,int>>& instructions,
+             std::pair<int, int>& waypoint, const int& part) {
   std::pair<int, int> coords = {0, 0}; // starting coordinates
-  std::map<char, std::pair<int, int>> shift_cardinal = {
+  const std::map<char, std::pair<int, int>> shift_cardinal = {
     {'N', {0,1}},
     {'S', {0,-1}},
     {'E', {1,0}},
     {'W', {-1,0}}
   };
 
+  // loop over all instructions
   for (const auto& [action, value] : instructions) {
     if (action == 'R') {
-      rotateShip(direction, value, -1);
+      rotateVector(waypoint, value, -1);
     } else if (action == 'L') {
-      rotateShip(direction, value, 1);
+      rotateVector(waypoint, value, 1);
     } else if (action == 'F' ) {
-      coords.first += value * direction.first;
-      coords.second += value * direction.second;
+      coords.first += value * waypoint.first;
+      coords.second += value * waypoint.second;
     } else {
-      coords.first += value * shift_cardinal.at(action).first;
-      coords.second += value * shift_cardinal.at(action).second;
+      if (part == 1) {
+        coords.first += value * shift_cardinal.at(action).first;
+        coords.second += value * shift_cardinal.at(action).second;
+      } else {
+        waypoint.first += value * shift_cardinal.at(action).first;
+        waypoint.second += value * shift_cardinal.at(action).second;
+      }
     }
   }
 
@@ -61,6 +67,7 @@ int main(int argc, char* argv[]) {
   instructions.reserve(input.size());
 
   // practice regex
+  // split string into action and value and store as vector of pairs
   for (const std::string& s : input) {
     std::vector<std::string> tmp;
     std::sregex_token_iterator iter(s.begin(), s.end(), rgx);
@@ -73,10 +80,12 @@ int main(int argc, char* argv[]) {
   }
 
   // part 1
-  int manhattan = navigate(instructions);
+  std::pair<int, int> waypoint = {1, 0};
+  int manhattan = navigate(instructions, waypoint, 1);
   std::cout << "Answer Part 1: " << manhattan << "\n";
 
   // part 2
-
- 
+  waypoint = {10,1};
+  manhattan = navigate(instructions, waypoint, 2);
+  std::cout << "Answer Part 2: " << manhattan << "\n";
 } 
