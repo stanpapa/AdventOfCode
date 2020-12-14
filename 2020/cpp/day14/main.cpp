@@ -48,18 +48,14 @@ unsigned long int initializeProgram2(const std::vector<std::string> program) {
     // we have 2^8 possible permutations of the memory address
 
     // first generate countX + 1 combinations
-    // std::vector<std::vector<char>> allCombs; allCombs.reserve(countX+1);
     std::vector<std::string> allCombs; allCombs.reserve(countX+1);
     for (int i = 0; i <= countX; i++) {
-      // std::vector<char> tmp;
       std::string tmp;
       tmp.reserve(countX);
       for (int j = 0; j < countX-i; j++) {
-        // tmp.push_back('0');
         tmp.append("0");
       }
       for (int j = 0; j < i; j++) {
-        // tmp.push_back('1');
         tmp.append("1");
       }
       allCombs.push_back(tmp);
