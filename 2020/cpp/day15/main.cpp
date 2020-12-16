@@ -1,12 +1,13 @@
 #include "../utils.h"
 
 #include <regex>
-#include <map>
+#include <unordered_map>
+#include <chrono>
 
 const std::regex rgx(R"([0-9]+)");
 
 int memoryGame(const std::vector<int>& input, const int& range) {
-  std::map<int, std::vector<int>> numInTurns;
+  std::unordered_map<int, std::vector<int>> numInTurns;
 
   // first play with the input
   // start counting at 1
@@ -56,10 +57,16 @@ int main(int argc, char* argv[]) {
   }
 
   // part 1
+  auto started = std::chrono::high_resolution_clock::now();
   std::cout << "Answer Part 1: "  << memoryGame(input, 2020) << "\n";
+  auto done = std::chrono::high_resolution_clock::now();
+  std::cout << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(done-started).count() << "ms\n";
 
   // part 2
+  started = std::chrono::high_resolution_clock::now();
   std::cout << "Answer Part 2: "  << memoryGame(input, 30000000) << "\n";
+  done = std::chrono::high_resolution_clock::now();
+  std::cout << "Time elapsed: " << std::chrono::duration_cast<std::chrono::seconds>(done-started).count() << "s\n";
   
   return 0;
 } 
