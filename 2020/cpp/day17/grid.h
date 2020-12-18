@@ -42,21 +42,40 @@ struct std::hash<Coord4D> {
   };
 };
 
-struct Grid3D {
-    std::unordered_set<Coord3D, std::hash<Coord3D>> active_;
-    std::unordered_set<Coord3D, std::hash<Coord3D>> inactive_;
+template <class T>
+struct Grid {
+  std::unordered_set<T, std::hash<T>> active_;
+  std::unordered_set<T, std::hash<T>> inactive_;
 
-    Grid3D() = default;
-    Grid3D(const Grid3D &other);
+  Grid() = default;
+  Grid(const Grid<T> &other) {
+    active_ = other.active_;
+    inactive_ = other.inactive_;
+  }
 
-    int nActive() const;
-    int nInactive() const;
-    int size() const;
+  int nActive() const { return active_.size(); }
+  int nInactive() const { return inactive_.size(); }
+  int size() const { return active_.size() + inactive_.size(); }
 
-    void clear();
+  void clear() { active_.clear(); inactive_.clear(); };
 
-    std::tuple<int, int, int, int, int, int> xyzBounds() const;
+  Grid<T>& operator()(const Grid<T> &other) {
+    active_ = other.active_;
+    inactive_ = other.inactive_;
+    return *this;
+  }
+};
 
-    Grid3D& operator()(const Grid3D &other);
-    friend std::ostream &operator<<(std::ostream &os, const Grid3D &grid);
+struct Grid3D : Grid<Coord3D> {
+    void extend();
+    std::tuple<int, int, int, int, int, int> bounds() const;
+    int nNeighbours(const Coord3D& coord);
+
+    friend std::ostream& operator<<(std::ostream& os, const Grid3D& grid);
+};
+
+struct Grid4D : Grid<Coord4D> {
+    void extend();
+    std::tuple<int, int, int, int, int, int, int, int> bounds() const;
+    int nNeighbours(const Coord4D& coord);
 };
