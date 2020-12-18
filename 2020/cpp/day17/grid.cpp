@@ -127,7 +127,7 @@ void Grid4D::extend() {
     for (int z = minZ-1; z <= maxZ+1; z++) {
       for (int x = minX-1; x <= maxX+1; x++) {
         for (int y = minY-1; y <= maxY+1; y++) {
-          if (z >= minZ && z <= maxZ) {
+          if (z >= minZ && z <= maxZ && w >= minW && w <= maxW) {
             if (x >= minX && x <= maxX && y >= minY && y <= maxY) continue;
             this->inactive_.insert(Coord4D(x, y, z, w));
           } else {
