@@ -30,6 +30,15 @@ void readInput(const std::string& fname, std::vector<int>& input) {
   f.close();
 }
 
+void readInput(const std::string& fname, std::vector<unsigned long long int>& input) {
+  std::ifstream f(fname);
+  std::string line;
+  while (getline(f, line)) {
+    input.push_back(std::stoull(line));
+  }
+  f.close();
+}
+
 void readInput(const std::string& fname, std::vector<std::string>& input) {
   std::ifstream f(fname);
   std::string line;
@@ -60,13 +69,6 @@ void readInputAndSplit(const std::string& fname, std::vector<std::string>& input
   }
   input.push_back(token); // final entry
   f.close();
-}
-
-
-void print(const std::vector<std::string>& vec) {
-  for (const std::string& s : vec) {
-    std::cout << s << "\n";
-  }
 }
 
 bool isNumber(const std::string& s) {
