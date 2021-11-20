@@ -14,24 +14,23 @@ struct Grid {
 }
 
 impl Grid {
-	fn new(input: &str) -> Grid {
+	fn new(input: &String) -> Grid {
+		let lines: Vec<&str> = input.lines().collect();
+		let width  = lines[0].chars().count();
+        let length = lines.len();
 
-		// is there a better way to initialize tnis map? There must be
-		let mut tmp: HashMap<Point, char> = HashMap::new();
-		let mut y = 0;
-		for row in input.lines() {
-			let mut x = 0;
-			for column in row.chars() {
-				tmp.insert(Point(x,y), column);
-				x += 1;
-			}
-			y += 1;
-		}
+		let mut map: HashMap<Point, char> = HashMap::new();
+		for y in 0..length {
+			let line: Vec<char> = lines[y].chars().collect();
+			for (x, c) in line.iter().enumerate().take(width) {
+				map.insert(Point(x,y), *c);
+			} // (x,c)
+		} // y
 
 		Grid {
-			grid: tmp,
-			width: input.lines().nth(0).unwrap().len(),
-			length: input.lines().count(),
+			grid: map,
+			width: width,
+			length: length,
 		}
 	}
 
@@ -41,8 +40,7 @@ impl Grid {
 
 		for y in (0..self.length).step_by(*slope_y) {
 			if self.grid[&Point(x,y)] == '#' { n_trees += 1; }
-			x += slope_x;
-			if x >= self.width { x -= self.width }
+			x = (x + slope_x) % self.width;
 		}
 
 		n_trees
@@ -66,7 +64,7 @@ mod tests {
 .#........#
 #.##...#...
 #...##....#
-.#..#...#.#";
+.#..#...#.#".to_string();
 
 		let grid = Grid::new(&input);
 
@@ -85,15 +83,20 @@ mod tests {
 .#........#
 #.##...#...
 #...##....#
-.#..#...#.#";
+.#..#...#.#".to_string();
 
 		let grid = Grid::new(&input);
 
-		let mut n = grid.traverse(&1, &1);
-		n *= grid.traverse(&3, &1);
-		n *= grid.traverse(&5, &1);
-		n *= grid.traverse(&7, &1);
-		n *= grid.traverse(&1, &2);
+		let slopes = vec!((1,1),
+						  (3,1),
+						  (5,1),
+						  (7,1),
+						  (1,2));
+
+		let n = slopes
+			.iter()
+			.map(|(slope_x, slope_y)| grid.traverse(slope_x, slope_y))
+			.product::<usize>();
 
 		assert_eq!(336, n);
     }
@@ -114,11 +117,17 @@ fn main() -> Result<(), Error> {
 
     println!("Part1: {:?}", grid.traverse(&3,&1));
 
-    let mut n = grid.traverse(&1, &1);
-	n *= grid.traverse(&3, &1);
-	n *= grid.traverse(&5, &1);
-	n *= grid.traverse(&7, &1);
-	n *= grid.traverse(&1, &2);
+    let slopes = vec![(1,1),
+					  (3,1),
+					  (5,1),
+					  (7,1),
+					  (1,2),
+    ];
+
+	let n = slopes
+		.iter()
+		.map(|(slope_x, slope_y)| grid.traverse(slope_x, slope_y))
+		.product::<usize>();
 
 	println!("Part2: {}", n);
   
