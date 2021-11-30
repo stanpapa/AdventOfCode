@@ -13,7 +13,7 @@ fn run (day: &str) {
 
 #[cfg(not(debug_assertions))]
 fn run (day: &str) {
-    let binary = format!("./target/debug/{}",day);
+    let binary = format!("./target/release/{}",day);
     let input = format!("./input/{}.txt", day);
 
     Command::new(binary)
