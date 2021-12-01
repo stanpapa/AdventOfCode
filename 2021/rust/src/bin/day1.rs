@@ -3,33 +3,32 @@ use std::io::Error;
 // use crate::utils;
 use aoc_2021_rust::utils::input;
 
-pub fn main() -> Result<(), Error> {
+// ------------------------------------------------------------
+// Part 1
+// You can use window to iterate over a range/window of items
+// filter can be used instead of an if
+// we then count the number of occurences the filter lets trough
+// ------------------------------------------------------------
+fn part_1(sweeps: &Vec<i32>) -> Result<u32, Error> {
+    Ok(sweeps.windows(2).filter(|w| w[0] < w[1]).count() as u32)
+}
+
+// ------------------------------------------------------------
+// Part 2
+// We use the same principle as for part 1, with the difference
+// being the window size and filter condition.
+// the exercise is to check [a,b,c].sum() - [b,c,d].sum() = a - d
+// So, it suffices to check in windows of 4 and only check a - d
+// ------------------------------------------------------------
+fn part_2(sweeps: &Vec<i32>) -> Result<u32, Error> {
+    Ok(sweeps.windows(4).filter(|w| w[0] < w[3]).count() as u32)
+}
+
+fn main() -> Result<(), Error> {
     let input = input::read_input_as_ints()?;
 
-    // part 1
-    let mut increases = 0;
-    let mut last_number = input[0];
-    for i in 1..input.len() {
-        if input[i] > last_number {
-            increases += 1;
-        }
-        last_number = input[i];
-    }
-
-    println!("Part 1: {}", increases);
-
-    // part 2
-    increases = 0;
-    last_number = input[0] + input[1] + input[2];
-    for i in 1..input.len() - 2 {
-        let sum = input[i] + input[i + 1] + input[i + 2];
-        if sum > last_number {
-            increases += 1;
-        }
-        last_number = sum;
-    }
-
-    println!("Part 2: {}", increases);
+    println!("Part 1: {}", part_1(&input)?);
+    println!("Part 1: {}", part_2(&input)?);
 
     Ok(())
 }
