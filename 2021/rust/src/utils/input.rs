@@ -1,36 +1,22 @@
-use std::{
-    env,
-    fs::{self, File},
-    io::{BufRead, BufReader, Error},
-};
+use std::{env, fmt::Debug, fs, io::Error, str::FromStr};
 
 pub fn read_input_as_string() -> Result<String, Error> {
     let args: Vec<String> = env::args().collect();
-
-    if args.len() != 2 {
-        panic!("Input file is missing! ABORT.\n");
-    }
-
-    // read input from file
-    let filename = &args[1];
-    Ok(fs::read_to_string(filename)?)
+    Ok(fs::read_to_string(&args[1]).expect("Input file is missing"))
 }
 
-pub fn read_input_as_ints() -> Result<Vec<i32>, Error> {
+// I don't like that I need the std::fmt::Debug here,
+// but I can't find a solution for this
+pub fn read_input_as_vec<T>() -> Result<Vec<T>, Error>
+where
+    T: FromStr,
+    <T as FromStr>::Err: Debug,
+{
     let args: Vec<String> = env::args().collect();
+    let input = fs::read_to_string(&args[1]).expect("Input file is missing");
 
-    if args.len() != 2 {
-        panic!("Input file is missing! ABORT.\n");
-    }
-
-    // read input from file
-    let file = File::open(&args[1]).expect("File could not be found.");
-    let reader = BufReader::new(file);
-
-    let numbers: Vec<i32> = reader
+    Ok(input
         .lines()
-        .map(|line| line.unwrap().parse().unwrap())
-        .collect();
-
-    Ok(numbers)
+        .map(|l| l.parse::<T>().expect("Unable to parse line"))
+        .collect())
 }

@@ -26,9 +26,11 @@ fn main() {
 
     let puzzles = vec![
         "day1",
+        "day2",
     ];
 
     for puzzle in puzzles {
+        println!("=================\n{}",puzzle);
         run(puzzle);
     }
 }
