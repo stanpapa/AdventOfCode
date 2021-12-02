@@ -7,7 +7,7 @@ fn run (day: &str) {
 
     Command::new(binary)
         .arg(input)
-        .spawn()
+        .status()
         .expect("Something went inside run()");
 }
 
