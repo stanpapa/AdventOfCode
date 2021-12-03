@@ -18,7 +18,7 @@ fn run (day: &str) {
 
     Command::new(binary)
         .arg(input)
-        .spawn()
+        .status()
         .expect("Something went inside run()");
 }
 
@@ -27,6 +27,7 @@ fn main() {
     let puzzles = vec![
         "day1",
         "day2",
+        "day3",
     ];
 
     for puzzle in puzzles {
