@@ -2,7 +2,10 @@ use std::{env, fmt::Debug, fs, io::Error, str::FromStr};
 
 pub fn read_input_as_string() -> Result<String, Error> {
     let args: Vec<String> = env::args().collect();
-    Ok(fs::read_to_string(&args[1]).expect("Input file is missing"))
+    if args.len() != 2 {
+        panic!("Input file is missing!")
+    }
+    Ok(fs::read_to_string(&args[1]).expect("Couldn't read the input file as a string"))
 }
 
 // I don't like that I need the std::fmt::Debug here,
