@@ -1,8 +1,8 @@
 use std::process::Command;
 
 #[cfg(debug_assertions)]
-fn run (day: &str) {
-    let binary = format!("./target/debug/{}",day);
+fn run(day: &str) {
+    let binary = format!("./target/debug/{}", day);
     let input = format!("./input/{}.txt", day);
 
     Command::new(binary)
@@ -12,8 +12,8 @@ fn run (day: &str) {
 }
 
 #[cfg(not(debug_assertions))]
-fn run (day: &str) {
-    let binary = format!("./target/release/{}",day);
+fn run(day: &str) {
+    let binary = format!("./target/release/{}", day);
     let input = format!("./input/{}.txt", day);
 
     Command::new(binary)
@@ -23,16 +23,10 @@ fn run (day: &str) {
 }
 
 fn main() {
-
-    let puzzles = vec![
-        "day1",
-        "day2",
-        "day3",
-        "day4",
-    ];
+    let puzzles = vec!["day1", "day2", "day3", "day4", "day5"];
 
     for puzzle in puzzles {
-        println!("=================\n{}",puzzle);
+        println!("=================\n{}", puzzle);
         run(puzzle);
     }
 }
