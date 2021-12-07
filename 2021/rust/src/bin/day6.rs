@@ -31,7 +31,7 @@ fn main() -> Result<(), Error> {
         .for_each(|f| fish[f] += 1);
 
     println!("Part 1: {}", procreate(fish, 80));
-    println!("Part 1: {}", procreate(fish, 256));
+    println!("Part 2: {}", procreate(fish, 256));
 
     Ok(())
 }
