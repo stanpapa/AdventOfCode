@@ -2,41 +2,41 @@ use std::io::Error;
 
 use aoc_2021_rust::utils::input;
 
-fn fuel_cost(positions: &Vec<usize>, destination: &usize, part: bool) -> usize {
-    let mut fuel = 0;
-
-    for pos in positions {
-        let steps = (*pos as i32 - *destination as i32).abs();
-
-        fuel += if part {
-            // part 1:
-            // fuel cost is equal to number of steps needed to move to `location`
-            steps
-        } else {
-            // part 2:
-            // fuel cost is equal to \sum_{n=1}^{k}, with k being
-            // the number of steps needed to move to `location`
-            (1..=steps).fold(0, |acc, val| acc + val)
-        }
-    }
-
-    fuel as usize
+fn gauss(n: i32) -> i32 {
+    n * (n + 1) / 2
 }
 
-fn minimal_fuel(positions: &Vec<usize>, part: bool) -> usize {
-    let pos_min = positions.iter().min().unwrap();
-    let pos_max = positions.iter().max().unwrap();
+fn minimal_fuel(positions: &Vec<i32>, part: bool) -> i32 {
+    // by adding the reference operator, (min,max) are bound to the actual values
+    let &min = positions.iter().min().unwrap();
+    let &max = positions.iter().max().unwrap();
 
-    let mut min_fuel = fuel_cost(positions, pos_max, part);
-
-    for pos in *pos_min..*pos_max {
-        let fuel = fuel_cost(positions, &pos, part);
-
-        if fuel < min_fuel {
-            min_fuel = fuel;
-        }
+    if part {
+        // part 1:
+        // fuel cost is equal to number of steps needed to move to `destination`
+        (min..max)
+            .map(|destination| {
+                positions
+                    .iter()
+                    .map(|pos| (destination - pos).abs())
+                    .sum::<i32>()
+            })
+            .min()
+            .unwrap()
+    } else {
+        // part 2:
+        // fuel cost is equal to \sum_{n=1}^{k} = 1/2 k(k+1), with k being
+        // the number of steps needed to move to `destination`
+        (min..max)
+            .map(|destination| {
+                positions
+                    .iter()
+                    .map(|pos| gauss((destination - pos).abs()))
+                    .sum::<i32>()
+            })
+            .min()
+            .unwrap()
     }
-    min_fuel
 }
 
 fn main() -> Result<(), Error> {
