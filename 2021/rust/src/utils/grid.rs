@@ -9,26 +9,6 @@ pub struct GridMap<T> {
     pub width: usize,
 }
 
-impl<T> ops::Index<Coordinate> for GridMap<T> {
-    type Output = T;
-
-    fn index(&self, index: Coordinate) -> &Self::Output {
-        match self.map.get(&index) {
-            Some(val) => val,
-            _ => panic!("Coordinate out of bounds"),
-        }
-    }
-}
-
-impl<T> ops::IndexMut<Coordinate> for GridMap<T> {
-    fn index_mut(&mut self, index: Coordinate) -> &mut Self::Output {
-        match self.map.get_mut(&index) {
-            Some(val) => val,
-            _ => panic!("Coordinate out of bounds"),
-        }
-    }
-}
-
 impl<T> GridMap<T>
 where
     T: FromStr,
@@ -57,8 +37,37 @@ where
     pub fn size(&self) -> usize {
         self.length * self.width
     }
+
+    pub fn get(&self, key: &Coordinate) -> Option<&T> {
+        self.map.get(key)
+    }
 }
 
+// Return reference to value in map by using square brackets
+// Example: GridMap[coord] -> &value
+impl<T> ops::Index<Coordinate> for GridMap<T> {
+    type Output = T;
+
+    fn index(&self, index: Coordinate) -> &Self::Output {
+        match self.map.get(&index) {
+            Some(val) => val,
+            _ => panic!("Coordinate out of bounds"),
+        }
+    }
+}
+
+// Return mutable reference to value in map by using square brackets
+// Example: GridMap[coord] -> &mut value
+impl<T> ops::IndexMut<Coordinate> for GridMap<T> {
+    fn index_mut(&mut self, index: Coordinate) -> &mut Self::Output {
+        match self.map.get_mut(&index) {
+            Some(val) => val,
+            _ => panic!("Coordinate out of bounds"),
+        }
+    }
+}
+
+// allow formatted print of grid using `{}`
 impl<T> fmt::Display for GridMap<T>
 where
     T: fmt::Display,
