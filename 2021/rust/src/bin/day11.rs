@@ -14,7 +14,7 @@ static DIRECTIONS: [Coordinate; 8] = [
 ];
 
 fn step(octopi: &mut GridMap<u8>) -> usize {
-    let mut queue = octopi.map.iter().map(|(&c, _energy)| c).collect::<Vec<_>>();
+    let mut queue = octopi.iter().map(|(&c, _energy)| c).collect::<Vec<_>>();
     let mut flashes = 0;
 
     while let Some(coord) = queue.pop() {
@@ -25,14 +25,14 @@ fn step(octopi: &mut GridMap<u8>) -> usize {
         if octopi[coord] == 10 {
             for direction in DIRECTIONS {
                 let neighbour = coord + direction;
-                if octopi.map.contains_key(&neighbour) {
+                if octopi.contains_key(&neighbour) {
                     queue.push(neighbour);
                 }
             }
         }
     }
 
-    for (_c, energy) in &mut octopi.map {
+    for (_c, energy) in octopi.iter_mut() {
         if *energy > 9 {
             *energy = 0;
             flashes += 1;
@@ -58,7 +58,6 @@ fn part_2(octopus_map: &GridMap<u8>) -> usize {
 fn main() -> Result<(), Error> {
     let input = input::read_input_as_string()?;
     let octopus_map = GridMap::<u8>::new(input);
-    println!("{}", octopus_map);
 
     println!("Part 1: {}", part_1(&octopus_map, 100));
     println!("Part 2: {}", part_2(&octopus_map));

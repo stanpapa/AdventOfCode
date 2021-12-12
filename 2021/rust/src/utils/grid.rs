@@ -7,7 +7,7 @@ use std::{
 
 #[derive(Default, Clone)]
 pub struct GridMap<T> {
-    pub map: HashMap<Coordinate, T>,
+    map: HashMap<Coordinate, T>,
     length: usize,
     width: usize,
 }
@@ -48,6 +48,14 @@ where
     pub fn contains_key(&self, key: &Coordinate) -> bool {
         self.map.contains_key(key)
     }
+
+    pub fn iter(&self) -> impl Iterator<Item = (&Coordinate, &T)> {
+        self.map.iter()
+    }
+
+    pub fn iter_mut(&mut self) -> impl Iterator<Item = (&Coordinate, &mut T)> {
+        self.map.iter_mut()
+    }
 }
 
 // Return reference to value in map by using square brackets
@@ -82,8 +90,6 @@ impl IntoIterator for GridMap<u8> {
         self.map.into_iter()
     }
 }
-
-// todo: implement iter(), and iter_mut() wrappers -> implement next()?
 
 // allow formatted print of grid using `{}`
 impl<T> fmt::Display for GridMap<T>
