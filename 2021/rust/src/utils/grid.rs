@@ -1,12 +1,15 @@
 use super::coordinate::Coordinate;
-use std::{collections::HashMap, fmt, ops, str::FromStr};
+use std::{
+    collections::{hash_map::IntoIter, HashMap},
+    fmt, ops,
+    str::FromStr,
+};
 
-// todo: make iterator
 #[derive(Default, Clone)]
 pub struct GridMap<T> {
     pub map: HashMap<Coordinate, T>,
-    pub length: usize,
-    pub width: usize,
+    length: usize,
+    width: usize,
 }
 
 impl<T> GridMap<T>
@@ -41,6 +44,10 @@ where
     pub fn get(&self, key: &Coordinate) -> Option<&T> {
         self.map.get(key)
     }
+
+    pub fn contains_key(&self, key: &Coordinate) -> bool {
+        self.map.contains_key(key)
+    }
 }
 
 // Return reference to value in map by using square brackets
@@ -66,6 +73,17 @@ impl<T> ops::IndexMut<Coordinate> for GridMap<T> {
         }
     }
 }
+
+// todo: make iterator work with generic T
+impl IntoIterator for GridMap<u8> {
+    type Item = (Coordinate, u8);
+    type IntoIter = IntoIter<Coordinate, u8>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.map.into_iter()
+    }
+}
+
+// todo: implement iter(), and iter_mut() wrappers -> implement next()?
 
 // allow formatted print of grid using `{}`
 impl<T> fmt::Display for GridMap<T>
