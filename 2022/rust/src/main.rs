@@ -2,7 +2,7 @@ use aoc_lib::Day;
 use std::process::Command;
 
 #[cfg(debug_assertions)]
-fn run(day: Day) {
+fn run(day: &Day) {
     let binary = format!("./target/debug/{}", day);
     let input = format!("./input/{}.txt", day);
 
@@ -13,7 +13,7 @@ fn run(day: Day) {
 }
 
 #[cfg(not(debug_assertions))]
-fn run(day: &str) {
+fn run(day: &Day) {
     let binary = format!("./target/release/{}", day);
     let input = format!("./input/{}.txt", day);
 
@@ -26,6 +26,6 @@ fn run(day: &str) {
 fn main() {
     for puzzle in Day::iter() {
         println!("=================\n{}", puzzle);
-        //        run(puzzle);
+               run(puzzle);
     }
 }
