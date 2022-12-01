@@ -1,4 +1,5 @@
 use aoc_lib::Day;
+
 use std::process::Command;
 
 #[cfg(debug_assertions)]
@@ -26,6 +27,6 @@ fn run(day: &Day) {
 fn main() {
     for puzzle in Day::iter() {
         println!("=================\n{}", puzzle);
-               run(puzzle);
+        run(puzzle);
     }
 }

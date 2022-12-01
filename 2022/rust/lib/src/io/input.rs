@@ -11,17 +11,16 @@ impl Input {
     pub fn new() -> Input {
         let args: Vec<String> = env::args().collect();
         let data = fs::read_to_string(&args[1]).expect("Input file is missing!");
-        Input {
-            data
-        }
+        Input { data }
     }
-    
+
     pub fn to_vec<T>(&self) -> Result<Vec<T>, Error>
-    where 
+    where
         T: FromStr,
-        <T as FromStr>::Err: Debug
+        <T as FromStr>::Err: Debug,
     {
-        Ok(self.data
+        Ok(self
+            .data
             .lines()
             .map(|l| l.parse::<T>().expect("Unable to parse line"))
             .collect())
