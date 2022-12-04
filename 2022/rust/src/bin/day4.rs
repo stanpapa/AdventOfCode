@@ -2,7 +2,6 @@ use std::{error::Error, str::FromStr};
 
 use aoc_lib::io::input::Input;
 
-#[derive(Debug)]
 struct Task(u64, u64);
 
 impl FromStr for Task {
@@ -19,7 +18,7 @@ impl FromStr for Task {
     }
 }
 
-fn full_overlap(assignments: &str) -> bool {
+fn overlap(assignments: &str, full: bool) -> bool {
     // obtaion individual assignments
     let assignment = assignments.split_once(',').unwrap();
 
@@ -27,17 +26,32 @@ fn full_overlap(assignments: &str) -> bool {
     let a1 = Task::from_str(assignment.0).unwrap();
     let a2 = Task::from_str(assignment.1).unwrap();
 
-    (a1.0 >= a2.0 && a1.1 <= a2.1) || (a2.0 >= a1.0 && a2.1 <= a1.1)
+    match full {
+        true => full_overlap(&a1, &a2),
+        false => partial_overlap(&a1, &a2),
+    }
 }
 
-fn part_1(input: &str) -> usize {
-    input.lines().filter(|l| full_overlap(l)).count()
+// check if one of the tasks if fully contained in the other
+fn full_overlap(t1: &Task, t2: &Task) -> bool {
+    (t1.0 >= t2.0 && t1.1 <= t2.1) || (t2.0 >= t1.0 && t2.1 <= t1.1)
+}
+
+// check if any of the tasks has any overlap
+fn partial_overlap(t1: &Task, t2: &Task) -> bool {
+    ((t1.0 >= t2.0 && t1.0 <= t2.1) || (t1.1 >= t2.0 && t1.1 <= t2.1))
+        || ((t2.0 >= t1.0 && t2.0 <= t1.1) || (t2.1 >= t1.0 && t2.1 <= t1.1))
+}
+
+fn solve(input: &str, full_overlap: bool) -> usize {
+    input.lines().filter(|l| overlap(l, full_overlap)).count()
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let inp = Input::new();
 
-    println!("part 1: {}", part_1(&inp.to_string()));
+    println!("part 1: {}", solve(&inp.to_string(), true));
+    println!("part 2: {}", solve(&inp.to_string(), false));
 
     Ok(())
 }
@@ -47,13 +61,14 @@ mod tests {
     #[test]
     fn day_4_part_1() {
         assert_eq!(
-            super::part_1(
+            super::solve(
                 r#"2-4,6-8
 2-3,4-5
 5-7,7-9
 2-8,3-7
 6-6,4-6
-2-6,4-8"#
+2-6,4-8"#,
+                true
             ),
             2
         );
@@ -61,6 +76,17 @@ mod tests {
 
     #[test]
     fn day_4_part_2() {
-        assert_eq!(0, 1);
+        assert_eq!(
+            super::solve(
+                r#"2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8"#,
+                false
+            ),
+            4
+        );
     }
 }
