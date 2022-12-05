@@ -57,7 +57,6 @@ fn solve(input: &str, part_1: bool) -> String {
                 true => cratemover_9000(&mut stacks, amount, from, to),
                 false => cratemover_9001(&mut stacks, amount, from, to),
             }
-            println!("{:?}", stacks);
         });
 
     // return top of the stacks as &str
