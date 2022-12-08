@@ -40,7 +40,7 @@ fn part_1(forest: &Forest) -> usize {
 fn scenic_score(forest: &Forest, tree: (&Coordinate, &u8)) -> usize {
     let coord = tree.0;
     let weight = tree.1;
-    let mut scenic_score = 0;
+    let mut scenic_score = 1;
 
     for direction in DIRECTIONS {
         let mut step = 1;
@@ -51,10 +51,7 @@ fn scenic_score(forest: &Forest, tree: (&Coordinate, &u8)) -> usize {
             match forest.get(&coord_next) {
                 Some(w) => {
                     if weight <= w || forest.is_edge(&coord_next) {
-                        match scenic_score {
-                            0 => scenic_score = step,
-                            _ => scenic_score *= step,
-                        }
+                        scenic_score *= step;
                         break;
                     }
                 }
