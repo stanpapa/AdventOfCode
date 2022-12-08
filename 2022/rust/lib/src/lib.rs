@@ -1,4 +1,5 @@
 pub mod graph;
+pub mod grid;
 pub mod io;
 
 use std::{fmt, slice::Iter};
@@ -18,7 +19,7 @@ pub enum Day {
     day5,
     day6,
     day7,
-    //    day8,
+    day8,
     //    day9,
     //    day10,
     //    day11,
@@ -46,7 +47,7 @@ impl fmt::Display for Day {
 
 impl Day {
     pub fn iter() -> Iter<'static, Day> {
-        static DAY: [Day; 7] = [
+        static DAY: [Day; 8] = [
             Day::day1,
             Day::day2,
             Day::day3,
@@ -54,6 +55,7 @@ impl Day {
             Day::day5,
             Day::day6,
             Day::day7,
+            Day::day8,
         ];
         DAY.iter()
     }
