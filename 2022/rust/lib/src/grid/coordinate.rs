@@ -10,6 +10,13 @@ impl Coordinate {
     pub fn new(x: isize, y: isize) -> Coordinate {
         Coordinate { x, y }
     }
+
+    pub fn signum(self) -> Self {
+        Coordinate {
+            x: self.x.signum(),
+            y: self.y.signum(),
+        }
+    }
 }
 
 impl ops::Add for Coordinate {

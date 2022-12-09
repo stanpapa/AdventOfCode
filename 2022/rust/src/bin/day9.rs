@@ -41,7 +41,7 @@ fn follow(head: &Coordinate, tail: &Coordinate) -> Coordinate {
     }
 
     let diff = *head - *tail;
-    Coordinate::new(tail.x + diff.x.signum(), tail.y + diff.y.signum())
+    *tail + diff.signum()
 }
 
 fn solve(input: &str, part1: bool) -> usize {
