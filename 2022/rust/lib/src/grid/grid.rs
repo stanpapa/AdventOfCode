@@ -1,9 +1,5 @@
 use crate::grid::coordinate::Coordinate;
-use std::{
-    collections::{hash_map::IntoIter, HashMap},
-    fmt, ops,
-    str::FromStr,
-};
+use std::{collections::HashMap, fmt, ops, str::FromStr};
 
 #[derive(Default, Clone)]
 pub struct Grid<T> {

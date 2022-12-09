@@ -56,7 +56,7 @@ fn solve(input: &str, part1: bool) -> usize {
         .collect::<Vec<_>>();
 
     let mut rope = vec![Coordinate::new(0, 0); length];
-    let mut visited = HashSet::from([Coordinate::new(0, 0)]);
+    let mut visited = HashSet::new();
 
     motions.iter().for_each(|m| {
         for _ in 1..=m.step {

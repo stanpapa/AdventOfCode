@@ -34,7 +34,7 @@ fn main() -> Result<(), Error> {
     let mut calories: Vec<Vec<u64>> = Vec::new();
     let mut vec = Vec::new();
     for cal in s {
-        if cal == "" {
+        if cal.is_empty() {
             calories.push(vec.clone());
             vec.clear();
             continue;

@@ -67,7 +67,7 @@ fn scenic_score(forest: &Forest, tree: (&Coordinate, &u8)) -> usize {
 
 fn part_2(forest: &Forest) -> usize {
     *forest
-        .iter()
+        .iter_inner()
         .map(|tree| scenic_score(forest, tree))
         .collect::<Vec<usize>>()
         .iter()

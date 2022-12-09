@@ -2,7 +2,7 @@ use std::{collections::VecDeque, error::Error, ops::ControlFlow};
 
 use aoc_lib::io::input::Input;
 
-fn cratemover_9000(stacks: &mut Vec<VecDeque<char>>, amount: usize, from: usize, to: usize) {
+fn cratemover_9000(stacks: &mut [VecDeque<char>], amount: usize, from: usize, to: usize) {
     for _i in 0..amount {
         // Rust forces me to store the crate in a local variable,
         // because I can't mutably borrow twice
@@ -11,7 +11,7 @@ fn cratemover_9000(stacks: &mut Vec<VecDeque<char>>, amount: usize, from: usize,
     }
 }
 
-fn cratemover_9001(stacks: &mut Vec<VecDeque<char>>, amount: usize, from: usize, to: usize) {
+fn cratemover_9001(stacks: &mut [VecDeque<char>], amount: usize, from: usize, to: usize) {
     for i in (0..amount).rev() {
         let moved = stacks[from].remove(i).unwrap();
         stacks[to].push_front(moved);
@@ -20,25 +20,24 @@ fn cratemover_9001(stacks: &mut Vec<VecDeque<char>>, amount: usize, from: usize,
 
 fn solve(input: &str, part_1: bool) -> String {
     // calculate number of stacks
-    let n = (input.lines().nth(0).expect("Line not found").len() + 1) / 4;
+    let n = (input.lines().next().expect("Line not found").len() + 1) / 4;
     let mut stacks: Vec<VecDeque<char>> = vec![VecDeque::new(); n];
     let mut begin = 0;
 
     // construct stacks
     input.lines().enumerate().try_for_each(|(j, l)| {
         // once we reach the empty line, the stacks are complete
-        if l.len() == 0 {
+        if l.is_empty() {
             begin = j + 1;
             return ControlFlow::Break((j, l));
         }
 
-        (0..n).for_each(|i| match l.chars().nth(4 * i + 1) {
-            Some(c) => {
+        (0..n).for_each(|i| {
+            if let Some(c) = l.chars().nth(4 * i + 1) {
                 if c.is_alphabetic() && c.is_uppercase() {
                     stacks[i].push_back(c);
                 }
             }
-            None => (),
         });
         ControlFlow::Continue(())
     });

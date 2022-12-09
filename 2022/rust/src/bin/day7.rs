@@ -68,7 +68,7 @@ fn construct_file_system(input: &str) -> FileSystem {
             }
 
             // use full path name to prevent duplicate keys
-            let cwd_new = cwd.name().to_string() + &tokens[2].to_string() + "/";
+            let cwd_new = cwd.name().to_string() + tokens[2] + "/";
             cwd = Item::Dir(cwd_new);
             continue;
         }
@@ -77,7 +77,7 @@ fn construct_file_system(input: &str) -> FileSystem {
         match tokens[0] {
             // add directory
             "dir" => {
-                let dir_new = cwd.name().to_string() + &tokens[1].to_string() + "/";
+                let dir_new = cwd.name().to_string() + tokens[1] + "/";
                 fs.add_vertex_to(
                     Vertex::new(cwd.clone(), 0),
                     Vertex::new(Item::Dir(dir_new), 0),
@@ -108,13 +108,13 @@ fn solve(input: &str, part_1: bool) -> usize {
             .sum(),
         false => {
             let total = calc_dir_weight(&fs, &Vertex::new(Item::Dir("/".to_string()), 0));
-            let mut rm = fs
-                .keys()
+            *fs.keys()
                 .map(|key| calc_dir_weight(&fs, key))
                 .filter(|val| (70000000 - total + val) >= 30000000)
-                .collect::<Vec<usize>>();
-            rm.sort();
-            rm[0]
+                .collect::<Vec<usize>>()
+                .iter()
+                .min()
+                .unwrap()
         }
     }
 }
