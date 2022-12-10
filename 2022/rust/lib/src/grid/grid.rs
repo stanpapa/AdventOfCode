@@ -66,6 +66,23 @@ where
     }
 }
 
+impl<T> Grid<T>
+where
+    T: FromStr + Copy,
+    <T as FromStr>::Err: std::fmt::Debug,
+{
+    pub fn new_with_value(width: usize, length: usize, val: T) -> Self {
+        let mut map: HashMap<Coordinate, T> = Default::default();
+        for x in 0..width {
+            for y in 0..length {
+                map.insert(Coordinate::new(x as isize, y as isize), val);
+            }
+        }
+
+        Self { map, length, width }
+    }
+}
+
 // Return reference to value in map by using square brackets
 // Example: GridMap[coord] -> &value
 impl<T> ops::Index<Coordinate> for Grid<T> {
