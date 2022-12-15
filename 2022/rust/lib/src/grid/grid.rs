@@ -64,6 +64,16 @@ where
     pub fn iter_inner(&self) -> impl Iterator<Item = (&Coordinate, &T)> {
         self.map.iter().filter(|(coord, _)| !self.is_edge(coord))
     }
+
+    // pub fn find_value(&self, value: &T) -> Option<&Coordinate> {
+    //     self.map
+    //         .iter()
+    //         .find_map(|(coord, val)| if val == value { Some(coord) } else { None })
+    // }
+
+    pub fn insert(&mut self, coord: Coordinate, val: T) {
+        self.map.insert(coord, val);
+    }
 }
 
 impl<T> Grid<T>
@@ -122,9 +132,48 @@ where
     T: fmt::Display,
 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for y in 0..self.length {
-            for x in 0..self.width {
-                let c = Coordinate::new(x as isize, y as isize);
+        let (mut x_begin, mut x_end) = (0, self.width as isize - 1);
+        let (mut y_begin, mut y_end) = (0, self.length as isize - 1);
+
+        if (self.length == 0 || self.width == 0) && !self.map.is_empty() {
+            // determine ranges
+            x_begin = *self
+                .map
+                .keys()
+                .map(|key| key.x)
+                .collect::<Vec<_>>()
+                .iter()
+                .min()
+                .unwrap();
+            x_end = *self
+                .map
+                .keys()
+                .map(|key| key.x)
+                .collect::<Vec<_>>()
+                .iter()
+                .max()
+                .unwrap();
+            y_begin = *self
+                .map
+                .keys()
+                .map(|key| key.y)
+                .collect::<Vec<_>>()
+                .iter()
+                .min()
+                .unwrap();
+            y_end = *self
+                .map
+                .keys()
+                .map(|key| key.y)
+                .collect::<Vec<_>>()
+                .iter()
+                .max()
+                .unwrap();
+        }
+
+        for y in y_begin..=y_end {
+            for x in x_begin..=x_end {
+                let c = Coordinate::new(x, y);
 
                 if let Some(val) = self.map.get(&c) {
                     write!(f, "{}", val.to_string())?;

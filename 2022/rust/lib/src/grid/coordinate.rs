@@ -1,4 +1,4 @@
-use std::{fmt, ops};
+use std::{fmt, ops, str::FromStr};
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Coordinate {
@@ -16,6 +16,20 @@ impl Coordinate {
             x: self.x.signum(),
             y: self.y.signum(),
         }
+    }
+}
+
+impl FromStr for Coordinate {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if let Some((x, y)) = s.split_once(',') {
+            return Ok(Self {
+                x: x.parse::<isize>().unwrap(),
+                y: y.parse::<isize>().unwrap(),
+            });
+        }
+        Err(())
     }
 }
 
