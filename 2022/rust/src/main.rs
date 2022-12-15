@@ -5,7 +5,7 @@ use std::process::Command;
 #[cfg(debug_assertions)]
 fn run(day: &Day) {
     let binary = format!("./target/debug/{}", day);
-    let input = format!("./input/{}.txt", day);
+    let input = format!("..//input/{}.txt", day);
 
     Command::new(binary)
         .arg(input)
