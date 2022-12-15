@@ -117,23 +117,14 @@ impl<T> ops::IndexMut<Coordinate> for Grid<T> {
     }
 }
 
-// todo: make iterator work with generic T
-// impl IntoIterator for GridMap<u8> {
-//     type Item = (Coordinate, u8);
-//     type IntoIter = IntoIter<Coordinate, u8>;
-//     fn into_iter(self) -> Self::IntoIter {
-//         self.map.into_iter()
-//     }
-// }
-
 // allow formatted print of grid using `{}`
 impl<T> fmt::Display for Grid<T>
 where
     T: fmt::Display,
 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let (mut x_begin, mut x_end) = (0, self.width as isize - 1);
-        let (mut y_begin, mut y_end) = (0, self.length as isize - 1);
+        let (mut x_begin, mut x_end) = (-2, self.width as isize + 2);
+        let (mut y_begin, mut y_end) = (-2, self.length as isize + 2);
 
         if (self.length == 0 || self.width == 0) && !self.map.is_empty() {
             // determine ranges
@@ -144,7 +135,8 @@ where
                 .collect::<Vec<_>>()
                 .iter()
                 .min()
-                .unwrap();
+                .unwrap()
+                - 2;
             x_end = *self
                 .map
                 .keys()
@@ -152,7 +144,8 @@ where
                 .collect::<Vec<_>>()
                 .iter()
                 .max()
-                .unwrap();
+                .unwrap()
+                + 2;
             y_begin = *self
                 .map
                 .keys()
@@ -160,7 +153,8 @@ where
                 .collect::<Vec<_>>()
                 .iter()
                 .min()
-                .unwrap();
+                .unwrap()
+                - 2;
             y_end = *self
                 .map
                 .keys()
@@ -168,7 +162,8 @@ where
                 .collect::<Vec<_>>()
                 .iter()
                 .max()
-                .unwrap();
+                .unwrap()
+                + 2;
         }
 
         for y in y_begin..=y_end {

@@ -25,7 +25,7 @@ pub enum Day {
     //    day11,
     //    day12,
     //    day13,
-    //    day14,
+    day14,
     //    day15,
     //    day16,
     //    day17,
@@ -47,7 +47,7 @@ impl fmt::Display for Day {
 
 impl Day {
     pub fn iter() -> Iter<'static, Day> {
-        static DAY: [Day; 10] = [
+        static DAY: [Day; 11] = [
             Day::day1,
             Day::day2,
             Day::day3,
@@ -58,6 +58,7 @@ impl Day {
             Day::day8,
             Day::day9,
             Day::day10,
+            Day::day14,
         ];
         DAY.iter()
     }

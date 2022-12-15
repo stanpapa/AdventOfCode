@@ -10,46 +10,37 @@ use aoc_lib::{
 
 type Cave = Grid<char>;
 
-fn pour(cave: &Cave) -> Option<Coordinate> {
+fn pour(cave: &Cave, bottom: isize, part_1: bool) -> Option<Coordinate> {
     let mut grain = Coordinate::new(500, 0);
-    let down = Coordinate::new(0, 1);
-    let left = Coordinate::new(-1, 1);
-    let right = Coordinate::new(1, 1);
+    let moves = [
+        Coordinate::new(0, 1),
+        Coordinate::new(-1, 1),
+        Coordinate::new(1, 1),
+    ];
 
-    let bottom = *cave
-        .iter()
-        .map(|(key, _)| key.y)
-        .collect::<Vec<_>>()
-        .iter()
-        .max()
-        .unwrap();
+    'outer: loop {
+        if part_1 {
+            if grain.y == bottom {
+                return None;
+            }
+        } else {
+            if grain.y == bottom {
+                return Some(grain);
+            }
 
-    loop {
-        // println!("{}", grain);
-
-        if grain.y == bottom {
-            return None;
-        }
-
-        match cave.get(&(grain + down)) {
-            Some(_) => (),
-            None => {
-                grain += down;
-                continue;
+            if let Some(_) = cave.get(&Coordinate::new(500, 0)) {
+                return None;
             }
         }
-        match cave.get(&(grain + left)) {
-            Some(_) => (),
-            None => {
-                grain += left;
-                continue;
-            }
-        }
-        match cave.get(&(grain + right)) {
-            Some(_) => (),
-            None => {
-                grain += right;
-                continue;
+
+        for m in moves.into_iter() {
+            let tmp = grain + m;
+            match cave.get(&tmp) {
+                Some(_) => (),
+                None => {
+                    grain = tmp;
+                    continue 'outer;
+                }
             }
         }
 
@@ -59,37 +50,42 @@ fn pour(cave: &Cave) -> Option<Coordinate> {
     Some(grain)
 }
 
-fn solve(input: &str) -> usize {
+fn solve(input: &str, part_1: bool) -> usize {
     // place rocks on map
     let mut cave = Cave::default();
-    // let mut cave = Cave::new_with_value();
     for line in input.lines() {
-        let coords = line
-            .split(" -> ")
+        line.split(" -> ")
             .map(|x| x.parse::<Coordinate>().unwrap())
-            .collect::<Vec<Coordinate>>();
-        // println!("{:?}", coords);
-        coords.windows(2).for_each(|c| {
-            // println!("{} -> {}", c[0], c[1]);
-            match c[0].x == c[1].x {
-                true => {
-                    for y in min(c[0].y, c[1].y)..=max(c[0].y, c[1].y) {
-                        cave.insert(Coordinate::new(c[0].x, y), '#');
+            .collect::<Vec<Coordinate>>()
+            .windows(2)
+            .for_each(|c| {
+                match c[0].x == c[1].x {
+                    true => {
+                        for y in min(c[0].y, c[1].y)..=max(c[0].y, c[1].y) {
+                            cave.insert(Coordinate::new(c[0].x, y), '#');
+                        }
                     }
-                }
-                false => {
-                    for x in min(c[0].x, c[1].x)..=max(c[0].x, c[1].x) {
-                        cave.insert(Coordinate::new(x, c[0].y), '#');
+                    false => {
+                        for x in min(c[0].x, c[1].x)..=max(c[0].x, c[1].x) {
+                            cave.insert(Coordinate::new(x, c[0].y), '#');
+                        }
                     }
-                }
-            };
-        });
-        // println!();
+                };
+            });
     }
+
+    let bottom = *cave
+        .iter()
+        .map(|(key, _)| key.y)
+        .collect::<Vec<_>>()
+        .iter()
+        .max()
+        .unwrap()
+        + !part_1 as isize;
 
     let mut grains = 0;
     loop {
-        if let Some(grain) = pour(&cave) {
+        if let Some(grain) = pour(&cave, bottom, part_1) {
             cave.insert(grain, 'o');
             grains += 1;
 
@@ -109,15 +105,25 @@ fn solve(input: &str) -> usize {
 fn main() -> Result<(), Box<dyn Error>> {
     let inp = Input::new();
 
-    println!("part 1: {}", solve(&inp.to_string()));
+    println!("part 1: {}", solve(&inp.to_string(), true));
+    println!("part 2: {}", solve(&inp.to_string(), false));
     //     println!(
     //         "part 1: {}",
     //         solve(
     //             &r#"498,4 -> 498,6 -> 496,6
-    // 503,4 -> 502,4 -> 502,9 -> 494,9"#
+    // 503,4 -> 502,4 -> 502,9 -> 494,9"#,
+    //             true
     //         )
     //     );
-    // println!("part 2:\n{}", part_2(&inp.to_string()));
+
+    //     println!(
+    //         "part 2: {}",
+    //         solve(
+    //             &r#"498,4 -> 498,6 -> 496,6
+    // 503,4 -> 502,4 -> 502,9 -> 494,9"#,
+    //             false
+    //         )
+    //     );
 
     Ok(())
 }
@@ -129,7 +135,8 @@ mod tests {
         assert_eq!(
             super::solve(
                 r#"498,4 -> 498,6 -> 496,6
-503,4 -> 502,4 -> 502,9 -> 494,9"#
+503,4 -> 502,4 -> 502,9 -> 494,9"#,
+                true
             ),
             24
         );
@@ -140,7 +147,8 @@ mod tests {
         assert_eq!(
             super::solve(
                 r#"498,4 -> 498,6 -> 496,6
-503,4 -> 502,4 -> 502,9 -> 494,9"#
+503,4 -> 502,4 -> 502,9 -> 494,9"#,
+                false
             ),
             93
         );
