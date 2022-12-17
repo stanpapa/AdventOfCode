@@ -9,3 +9,4 @@ default-run = "aoc_2022_rust"
 [dependencies]
 aoc_lib = { path = "lib" }
 regex = "1"
+rayon = "1.6.1"
