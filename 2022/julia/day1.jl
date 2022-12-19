@@ -8,4 +8,4 @@ for line in split(input, "\n\n")
 end
 
 println("part 1: $(maximum(calories))")
-println("part 2: $(sum(first(sort!(calories, rev = true), 3)))")
+println("part 2: $(sum(last(sort!(calories), 3)))")
