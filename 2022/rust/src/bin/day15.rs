@@ -39,7 +39,7 @@ fn part_1(input: &str, row: isize) -> usize {
 
     let mut cannot = HashSet::<Coordinate>::new();
     for (sensor, beacon) in pairs.iter() {
-        let distance = sensor.manhattan_distance(&beacon) as isize;
+        let distance = sensor.manhattan_distance(beacon) as isize;
 
         // check if we need to evaluate the pair
         if row < sensor.y - distance || row > sensor.y + distance {
@@ -50,7 +50,7 @@ fn part_1(input: &str, row: isize) -> usize {
         for x in (sensor.x - distance)..=(sensor.x + distance) {
             let tmp = Coordinate::new(x, row);
             // skip coordinate if not within manhattan distance of sensor
-            if tmp.manhattan_distance(&sensor) as isize > distance {
+            if tmp.manhattan_distance(sensor) as isize > distance {
                 continue;
             }
 
@@ -99,18 +99,19 @@ fn part_2(input: &str, max: isize) -> ControlFlow<usize> {
     let pairs = input.lines().map(parse_distance).collect::<Vec<_>>();
 
     (0..=max).into_par_iter().try_for_each(|x| {
-        ControlFlow::Continue('y: for y in 0..=max {
+        'y: for y in 0..=max {
             let tmp = Coordinate::new(x, y);
 
             for (sensor, distance) in pairs.iter() {
-                if tmp.manhattan_distance(&sensor) <= *distance {
+                if tmp.manhattan_distance(sensor) <= *distance {
                     continue 'y;
                 }
             }
 
             // not within manhattan distance of any sensor
             return ControlFlow::Break(tmp.x as usize * 4000000 + tmp.y as usize);
-        })
+        }
+        ControlFlow::Continue(())
     })
 }
 

@@ -28,7 +28,7 @@ fn pour(cave: &Cave, bottom: isize, part_1: bool) -> Option<Coordinate> {
                 return Some(grain);
             }
 
-            if let Some(_) = cave.get(&Coordinate::new(500, 0)) {
+            if cave.get(&Coordinate::new(500, 0)).is_some() {
                 return None;
             }
         }
@@ -84,19 +84,15 @@ fn solve(input: &str, part_1: bool) -> usize {
         + !part_1 as isize;
 
     let mut grains = 0;
-    loop {
-        if let Some(grain) = pour(&cave, bottom, part_1) {
-            cave.insert(grain, 'o');
-            grains += 1;
+    while let Some(grain) = pour(&cave, bottom, part_1) {
+        cave.insert(grain, 'o');
+        grains += 1;
 
-            // visualize in terminal
-            // let mut clear = std::process::Command::new("clear");
-            // clear.status().expect("failed to execute command");
-            // println!("{}", cave);
-            // std::thread::sleep(std::time::Duration::from_millis(50));
-        } else {
-            break;
-        }
+        // visualize in terminal
+        // let mut clear = std::process::Command::new("clear");
+        // clear.status().expect("failed to execute command");
+        // println!("{}", cave);
+        // std::thread::sleep(std::time::Duration::from_millis(50));
     }
 
     grains
