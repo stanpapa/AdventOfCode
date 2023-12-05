@@ -65,7 +65,6 @@ fn find_surrounding_numbers(
                         break;
                     }
                     number = number * 10 + r.to_digit(10).unwrap();
-                    // println!("sweep right: {right} -> {number}");
                 } else {
                     break;
                 }
