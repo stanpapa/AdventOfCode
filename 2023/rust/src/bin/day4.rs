@@ -13,10 +13,7 @@ fn matches(card: &str) -> u32 {
     let numbers_right = split.1.split_whitespace().collect::<HashSet<&str>>();
 
     // return number of matches between left and right set of numbers
-    numbers_left
-        .intersection(&numbers_right)
-        .collect::<HashSet<_>>()
-        .len() as u32
+    numbers_left.intersection(&numbers_right).count() as u32
 }
 
 fn part_1(scratchcards: &str) -> u32 {
