@@ -1,9 +1,8 @@
 use std::{collections::HashMap, io::Error};
 
-extern crate regex;
-use regex::Regex;
-
 use libaoc::io::input::Input;
+
+use regex::Regex;
 
 static RE_PATTERN: &str = r"Game (?<id>\d+):";
 static RE_CUBES_PATTERN: &str = r"(?<n>\d+) (?<colour>red|green|blue)";

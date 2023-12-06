@@ -2,12 +2,17 @@ use std::io::Error;
 
 use libaoc::io::input::Input;
 
+use rayon::prelude::*;
+
 fn n_ways_to_beat(t_max: u64, d_min: u64) -> u64 {
     // v = t_charge
     // distance = v * t_remaining = t_charge * (t_max - t_charge)
 
     // brute force
-    (0..t_max).filter(|t| (t_max - t) * t > d_min).count() as u64
+    (0..t_max)
+        .into_par_iter()
+        .filter(|t| (t_max - t) * t > d_min)
+        .count() as u64
 
     // solve quadratic equation: -t**2 + t_max * t - d_min = 0
     // let discriminant = ((t_max * t_max - 4 * d_min) as f64).sqrt();

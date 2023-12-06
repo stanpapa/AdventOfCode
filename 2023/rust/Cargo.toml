@@ -9,4 +9,5 @@ default-run = "aoc"
 [dependencies]
 libaoc = { path = "lib" }
 regex = "1.10.2"
+rayon = "1.8.0"
 
