@@ -24,7 +24,7 @@ fn part_1(scratchcards: &str) -> u32 {
 
         // if there is at least one match, then calculate the score
         if n >= 1 {
-            return acc + 2_u32.pow(n - 1);
+            return acc + (1 << (n - 1));
         }
 
         // no matches means the score stays the same
