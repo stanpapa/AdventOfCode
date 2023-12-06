@@ -42,14 +42,14 @@ fn find_surrounding_numbers(
             // sweep left for beginning of number
             let mut left = neighbour;
             loop {
-                left = left + Coordinate::new(-1, 0);
+                left += Coordinate::new(-1, 0);
                 if let Some(l) = schematic.get(&left) {
                     seen.insert(left);
                     if !l.is_numeric() {
                         break;
                     }
-                    number = number
-                        + l.to_digit(10).unwrap() * 10_u32.pow(neighbour.x as u32 - left.x as u32);
+                    number +=
+                        l.to_digit(10).unwrap() * 10_u32.pow(neighbour.x as u32 - left.x as u32);
                 } else {
                     break;
                 }
@@ -58,7 +58,7 @@ fn find_surrounding_numbers(
             // sweep right for end of number
             let mut right = neighbour;
             loop {
-                right = right + Coordinate::new(1, 0);
+                right += Coordinate::new(1, 0);
                 if let Some(r) = schematic.get(&right) {
                     seen.insert(right);
                     if !r.is_numeric() {
