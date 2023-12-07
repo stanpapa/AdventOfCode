@@ -48,17 +48,20 @@ impl CamelCard for CamelCard1 {
     ///
     /// The type is determined by how many occurences of a card type there are
     fn find_hand_type(card_count: &HashMap<Self, u8>, hand: &[Self; 5]) -> CamelCardHand<Self> {
-        if card_count.values().any(|&count| count == 5) {
+        let check_count =
+            |card_count: &HashMap<Self, u8>, n: u8| card_count.values().any(|&count| count == n);
+
+        if check_count(card_count, 5) {
             CamelCardHand::FiveOfAKind(*hand)
-        } else if card_count.values().any(|&count| count == 4) {
+        } else if check_count(card_count, 4) {
             CamelCardHand::FourOfAKind(*hand)
-        } else if card_count.values().any(|&count| count == 3) {
-            if card_count.values().any(|&count| count == 2) {
+        } else if check_count(card_count, 3) {
+            if check_count(card_count, 2) {
                 CamelCardHand::FullHouse(*hand)
             } else {
                 CamelCardHand::ThreeOfAKind(*hand)
             }
-        } else if card_count.values().any(|&count| count == 2) {
+        } else if check_count(card_count, 2) {
             if card_count.values().filter(|&count| *count == 2).count() == 2 {
                 CamelCardHand::TwoPair(*hand)
             } else {
