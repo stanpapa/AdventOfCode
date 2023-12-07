@@ -86,81 +86,40 @@ impl CamelCard for CamelCard2 {
     ///
     /// The type is determined by how many occurences of a card type there are
     fn find_hand_type(card_count: &HashMap<Self, u8>, hand: &[Self; 5]) -> CamelCardHand<Self> {
-        let count_joker = card_count.get(&Self::J);
+        let count_joker = match card_count.get(&Self::J) {
+            Some(n) => *n,
+            None => 0,
+        };
 
-        if card_count.values().any(|&count| count == 5) {
+        if card_count.values().any(|&count| count == 5)
+            || (card_count.values().any(|&count| count == 4) && count_joker == 1)
+            || (card_count.values().any(|&count| count == 3) && count_joker == 2)
+            || (card_count.values().any(|&count| count == 2) && count_joker == 3)
+            || (card_count.values().any(|&count| count == 1) && count_joker == 4)
+        {
             CamelCardHand::FiveOfAKind(*hand)
-        } else if card_count.values().any(|&count| count == 4) {
-            match count_joker {
-                Some(n) => {
-                    if *n == 4 || *n == 1 {
-                        // 4 jokers + 1 card or 1 joker + 4 cards
-                        return CamelCardHand::FiveOfAKind(*hand);
-                    } else {
-                        // 4 identical cards, no joker
-                        return CamelCardHand::FourOfAKind(*hand);
-                    }
-                }
-                None => CamelCardHand::FourOfAKind(*hand),
-            }
-        } else if card_count.values().any(|&count| count == 3) {
-            match count_joker {
-                Some(n) => {
-                    if *n == 3 {
-                        if card_count.values().any(|&count| count == 2) {
-                            // 3 jokers + 2 identical cards
-                            return CamelCardHand::FiveOfAKind(*hand);
-                        } else {
-                            // 3 jokers + any other card
-                            return CamelCardHand::FourOfAKind(*hand);
-                        }
-                    } else if *n == 2 {
-                        // 2 jokers + 3 other cards
-                        return CamelCardHand::FiveOfAKind(*hand);
-                    } else {
-                        // 1 jokers + 3 other cards
-                        return CamelCardHand::FourOfAKind(*hand);
-                    }
-                }
-                None => {
-                    if card_count.values().any(|&count| count == 2) {
-                        return CamelCardHand::FullHouse(*hand);
-                    } else {
-                        return CamelCardHand::ThreeOfAKind(*hand);
-                    }
-                }
-            }
-        } else if card_count.values().any(|&count| count == 2) {
-            match count_joker {
-                Some(n) => {
-                    if *n == 2 && card_count.values().filter(|&count| *count == 2).count() == 2 {
-                        // 2 jokers + another pair
-                        return CamelCardHand::FourOfAKind(*hand);
-                    } else {
-                        // 1 joker, 2 pairs
-                        if card_count.values().filter(|&count| *count == 2).count() == 2 {
-                            return CamelCardHand::FullHouse(*hand);
-                        } else {
-                            // 1 joker + a pair
-                            return CamelCardHand::ThreeOfAKind(*hand);
-                        }
-                    }
-                }
-                None => {
-                    if card_count.values().filter(|&count| *count == 2).count() == 2 {
-                        // 2 pairs, no joker
-                        return CamelCardHand::TwoPair(*hand);
-                    } else {
-                        // one pair
-                        return CamelCardHand::OnePair(*hand);
-                    }
-                }
-            }
+        } else if card_count.values().any(|&count| count == 4)
+            || (card_count.values().any(|&count| count == 3) && count_joker == 1)
+            || (card_count.values().filter(|&count| *count == 2).count() == 2 && count_joker == 2)
+            || (card_count.values().any(|&count| count == 1) && count_joker == 3)
+        {
+            return CamelCardHand::FourOfAKind(*hand);
+        } else if card_count.values().any(|&count| count == 3)
+            && card_count.values().any(|&count| count == 2)
+            || card_count.values().filter(|&count| *count == 2).count() == 2 && count_joker == 1
+        {
+            return CamelCardHand::FullHouse(*hand);
+        } else if card_count.values().any(|&count| count == 3)
+            || card_count.values().any(|&count| count == 2) && count_joker == 1
+            || card_count.values().any(|&count| count == 1) && count_joker == 2
+        {
+            return CamelCardHand::ThreeOfAKind(*hand);
+        } else if card_count.values().filter(|&count| *count == 2).count() == 2 {
+            return CamelCardHand::TwoPair(*hand);
+        } else if card_count.values().any(|&count| count == 2) || count_joker == 1 {
+            return CamelCardHand::OnePair(*hand);
         } else {
-            match count_joker {
-                Some(_n) => CamelCardHand::OnePair(*hand),
-                None => CamelCardHand::HighCard(*hand),
-            }
+            return CamelCardHand::HighCard(*hand);
         }
     }
 }
