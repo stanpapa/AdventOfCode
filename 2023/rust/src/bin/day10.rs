@@ -5,6 +5,8 @@ use libaoc::{
     io::input::Input,
 };
 
+use rayon::prelude::*;
+
 type Tiles = Grid<char>;
 
 /// find 1 of 2 possible directions
@@ -120,7 +122,6 @@ fn part_2(input: &str) -> isize {
         current += move_ahead(tiles[current], direction);
 
         // append current position to loop
-        // loop_main.insert(current);
         loop_main.push(current);
     }
 
@@ -129,6 +130,7 @@ fn part_2(input: &str) -> isize {
     // A = sum_(i=1..=n) ( x_i * y_(i+1) - x_(i+1) * y_i )
     let loop_length = loop_main.len();
     let area = (1..=loop_length)
+        .into_par_iter()
         .map(|i| {
             loop_main[i % loop_length].x * loop_main[(i + 1) % loop_length].y
                 - loop_main[(i + 1) % loop_length].x * loop_main[i % loop_length].y
@@ -142,7 +144,6 @@ fn part_2(input: &str) -> isize {
     // i = interior points -> this is what we want!!
     // b = boundary points -> number of points in the loop
     area.abs() - loop_length as isize / 2 + 1
-    // 0
 }
 
 fn main() -> Result<(), Error> {
