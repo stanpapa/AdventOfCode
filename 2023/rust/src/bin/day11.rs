@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, io::Error};
+use std::{cmp::Ordering, collections::HashSet, io::Error};
 
 use libaoc::{
     grid::{coordinate::Coordinate, grid::Grid, manhattan_distance::ManhattanDistance},
@@ -7,7 +7,6 @@ use libaoc::{
 
 type Image = Grid<char>;
 
-// fn part_1(input: &str) -> usize {
 fn solve(input: &str, expansion_rate: usize) -> usize {
     let image = Image::new(input);
 
@@ -17,6 +16,15 @@ fn solve(input: &str, expansion_rate: usize) -> usize {
         .filter(|(_coord, &ch)| ch == '#')
         .map(|(coord, _ch)| *coord)
         .collect::<Vec<Coordinate>>();
+
+    // find empty rows/columns for expansion
+    let empty_rows = (0..image.width as isize)
+        .filter(|x| !galaxies.iter().any(|g| g.x == *x))
+        .collect::<HashSet<isize>>();
+
+    let empty_cols = (0..image.length as isize)
+        .filter(|y| !galaxies.iter().any(|g| g.y == *y))
+        .collect::<HashSet<isize>>();
 
     // calculate shortest (Manhattan distance) between all unique pairs of galaxies
     let mut sum = 0;
@@ -28,23 +36,15 @@ fn solve(input: &str, expansion_rate: usize) -> usize {
 
             // calculate horizontal expansion
             let expansion_horizontal = match gi.x.cmp(&gj.x) {
-                Ordering::Greater => (gj.x..gi.x)
-                    .filter(|x| !galaxies.iter().any(|g| g.x == *x))
-                    .count(),
-                Ordering::Less => (gi.x..gj.x)
-                    .filter(|x| !galaxies.iter().any(|g| g.x == *x))
-                    .count(),
+                Ordering::Greater => (gj.x..gi.x).filter(|x| empty_rows.contains(x)).count(),
+                Ordering::Less => (gi.x..gj.x).filter(|x| empty_rows.contains(x)).count(),
                 Ordering::Equal => 0,
             };
 
             // calculate vertical expansion
             let expansion_vertical = match gi.y.cmp(&gj.y) {
-                Ordering::Greater => (gj.y..gi.y)
-                    .filter(|y| !galaxies.iter().any(|g| g.y == *y))
-                    .count(),
-                Ordering::Less => (gi.y..gj.y)
-                    .filter(|y| !galaxies.iter().any(|g| g.y == *y))
-                    .count(),
+                Ordering::Greater => (gj.y..gi.y).filter(|y| empty_cols.contains(y)).count(),
+                Ordering::Less => (gi.y..gj.y).filter(|y| empty_cols.contains(y)).count(),
                 Ordering::Equal => 0,
             };
 
