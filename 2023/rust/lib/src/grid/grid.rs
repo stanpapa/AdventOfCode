@@ -65,11 +65,11 @@ where
     //     self.map.iter().filter(|(coord, _)| !self.is_edge(coord))
     // }
 
-    // pub fn find_value(&self, value: &T) -> Option<&Coordinate> {
-    //     self.map
-    //         .iter()
-    //         .find_map(|(coord, val)| if val == value { Some(coord) } else { None })
-    // }
+    pub fn find_value(&self, value: &T) -> Option<Coordinate> {
+        self.map
+            .iter()
+            .find_map(|(coord, val)| if val == value { Some(*coord) } else { None })
+    }
 
     // pub fn insert(&mut self, coord: Coordinate, val: T) {
     //     self.map.insert(coord, val);
