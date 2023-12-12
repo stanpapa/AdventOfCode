@@ -1,5 +1,6 @@
 pub mod grid;
 pub mod io;
+pub mod math;
 
 use std::{fmt, slice::Iter};
 
@@ -22,7 +23,7 @@ pub enum Day {
     day9,
     day10,
     day11,
-    // day12,
+    day12,
     // day13,
     // day14,
     // day15,
@@ -46,7 +47,7 @@ impl fmt::Display for Day {
 
 impl Day {
     pub fn iter() -> Iter<'static, Day> {
-        static DAY: [Day; 11] = [
+        static DAY: [Day; 12] = [
             Day::day1,
             Day::day2,
             Day::day3,
@@ -58,7 +59,7 @@ impl Day {
             Day::day9,
             Day::day10,
             Day::day11,
-            // Day::day12,
+            Day::day12,
             // Day::day13,
             // Day::day14,
             // Day::day15,
