@@ -46,9 +46,9 @@ where
         self.map.iter()
     }
 
-    // pub fn iter_mut(&mut self) -> impl Iterator<Item = (&Coordinate, &mut T)> {
-    //     self.map.iter_mut()
-    // }
+    pub fn iter_mut(&mut self) -> impl Iterator<Item = (&Coordinate, &mut T)> {
+        self.map.iter_mut()
+    }
 
     // pub fn len_edge(&self) -> usize {
     //     self.width * 2 + (self.length - 2) * 2
@@ -71,13 +71,13 @@ where
             .find_map(|(coord, val)| if val == value { Some(*coord) } else { None })
     }
 
-    // pub fn insert(&mut self, coord: Coordinate, val: T) {
-    //     self.map.insert(coord, val);
-    // }
+    pub fn insert(&mut self, coord: Coordinate, val: T) {
+        self.map.insert(coord, val);
+    }
 
-    // pub fn remove(&mut self, coord: &Coordinate) {
-    //     self.map.remove(coord);
-    // }
+    pub fn remove(&mut self, coord: &Coordinate) {
+        self.map.remove(coord);
+    }
 }
 
 // impl<T> Grid<T>
