@@ -50,16 +50,20 @@ where
         self.map.iter_mut()
     }
 
+    pub fn iter_edge(&self) -> impl Iterator<Item = (&Coordinate, &T)> {
+        self.map.iter().filter(|(coord, _)| self.is_edge(coord))
+    }
+
     // pub fn len_edge(&self) -> usize {
     //     self.width * 2 + (self.length - 2) * 2
     // }
 
-    // pub fn is_edge(&self, coord: &Coordinate) -> bool {
-    //     coord.x == 0
-    //         || coord.x == self.width as isize - 1
-    //         || coord.y == 0
-    //         || coord.y == self.length as isize - 1
-    // }
+    pub fn is_edge(&self, coord: &Coordinate) -> bool {
+        coord.x == 0
+            || coord.x == self.width as isize - 1
+            || coord.y == 0
+            || coord.y == self.length as isize - 1
+    }
 
     // pub fn iter_inner(&self) -> impl Iterator<Item = (&Coordinate, &T)> {
     //     self.map.iter().filter(|(coord, _)| !self.is_edge(coord))
