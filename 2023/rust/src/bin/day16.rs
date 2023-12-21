@@ -57,17 +57,8 @@ fn propagate(contraption: &Contraption, mut beam: Beam, energised: &mut HashSet<
             },
             Some('-') => {
                 match beam.direction {
-                    Direction::West => {}
-                    Direction::East => {}
-                    Direction::South => {
-                        // split beams and propagate
-                        beam.direction = Direction::East;
-                        propagate(contraption, beam.clone(), energised);
-                        beam.direction = Direction::West;
-                        propagate(contraption, beam.clone(), energised);
-                        return;
-                    }
-                    Direction::North => {
+                    Direction::West | Direction::East => {}
+                    Direction::South | Direction::North => {
                         // split beams and propagate
                         beam.direction = Direction::East;
                         propagate(contraption, beam.clone(), energised);
@@ -79,7 +70,7 @@ fn propagate(contraption: &Contraption, mut beam: Beam, energised: &mut HashSet<
             }
             Some('|') => {
                 match beam.direction {
-                    Direction::East => {
+                    Direction::East | Direction::West => {
                         // split beams and propagate
                         beam.direction = Direction::North;
                         propagate(contraption, beam.clone(), energised);
@@ -87,16 +78,7 @@ fn propagate(contraption: &Contraption, mut beam: Beam, energised: &mut HashSet<
                         propagate(contraption, beam.clone(), energised);
                         return;
                     }
-                    Direction::West => {
-                        // split beams and propagate
-                        beam.direction = Direction::North;
-                        propagate(contraption, beam.clone(), energised);
-                        beam.direction = Direction::South;
-                        propagate(contraption, beam.clone(), energised);
-                        return;
-                    }
-                    Direction::North => {}
-                    Direction::South => {}
+                    Direction::North | Direction::South => {}
                 }
             }
             _ => {}
