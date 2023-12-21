@@ -1,9 +1,10 @@
-use std::{collections::HashMap, io::Error, str::FromStr};
+use std::{collections::HashMap, io::Error, ops::RangeInclusive, str::FromStr};
 
 use libaoc::io::input::Input;
 
 use rayon::prelude::*;
 
+/// Rule to check if a part meets the requirements
 #[derive(Debug, PartialEq, Eq)]
 struct Rule {
     category: char,  // x, m, a, s
@@ -35,7 +36,6 @@ impl FromStr for Rule {
                 Err("No comparison operator found")
             }
         } else {
-            // Err("No \':\' found")
             Ok(Self {
                 category: ' ',
                 condition: ' ',
@@ -46,6 +46,7 @@ impl FromStr for Rule {
     }
 }
 
+/// A Workflow is a list of Rules
 #[derive(Debug, PartialEq, Eq)]
 struct Workflow {
     rules: Vec<Rule>,
@@ -67,18 +68,39 @@ impl Workflow {
     }
 }
 
+/// construct workflows from input
+fn parse_workflows(input: &str) -> HashMap<&str, Workflow> {
+    input
+        .lines()
+        .take_while(|&line| !line.trim().is_empty())
+        .map(|line| {
+            let (label, workflows) = line.split_once('{').unwrap();
+            (
+                label,
+                workflows[..workflows.len() - 1]
+                    .parse::<Workflow>()
+                    .unwrap(),
+            )
+        })
+        .collect()
+}
+
 type Part = HashMap<char, usize>;
 
+/// check if a part is accepted
 fn is_accepted(part: &Part, workflows: &HashMap<&str, Workflow>) -> bool {
+    // starting point in workflows
     let mut label = "in";
 
     loop {
+        // check if a part is either accepted ('A') or rejected ('R')
         if label == "A" {
             return true;
         } else if label == "R" {
             return false;
         }
 
+        // check if a part abides by the rules
         for rule in workflows[label].iter() {
             match rule.condition {
                 '>' => {
@@ -100,19 +122,7 @@ fn is_accepted(part: &Part, workflows: &HashMap<&str, Workflow>) -> bool {
 }
 
 fn part_1(input: &str) -> usize {
-    let workflows: HashMap<&str, Workflow> = input
-        .lines()
-        .take_while(|&line| !line.trim().is_empty())
-        .map(|line| {
-            let (label, workflows) = line.split_once('{').unwrap();
-            (
-                label,
-                workflows[..workflows.len() - 1]
-                    .parse::<Workflow>()
-                    .unwrap(),
-            )
-        })
-        .collect();
+    let workflows = parse_workflows(input);
 
     let parts: Vec<Part> = input
         .lines()
@@ -131,6 +141,7 @@ fn part_1(input: &str) -> usize {
         })
         .collect();
 
+    // sum all individual values from all accepted parts
     parts
         .par_iter()
         .filter(|part| is_accepted(part, &workflows))
@@ -138,10 +149,119 @@ fn part_1(input: &str) -> usize {
         .sum()
 }
 
+type PartRange = HashMap<char, RangeInclusive<usize>>;
+
+/// recursive function to find all possible accepted part ranges
+fn find_accepted_ranges(
+    mut part: PartRange,
+    workflows: &HashMap<&str, Workflow>,
+    label: String,
+    accepted: &mut Vec<PartRange>,
+) {
+    // check if a part is either accepted ('A') or rejected ('R')
+    if label == "A" {
+        accepted.push(part.clone());
+        return;
+    } else if label == "R" {
+        return;
+    }
+
+    for rule in workflows[label.as_str()].iter() {
+        match rule.condition {
+            '>' => {
+                // partly accepted range
+                if part[&rule.category].contains(&rule.value) {
+                    // accepted range
+                    let mut part_accepted = part.clone();
+                    *part_accepted.get_mut(&rule.category).unwrap() =
+                        rule.value + 1..=*part[&rule.category].end();
+
+                    find_accepted_ranges(
+                        part_accepted,
+                        workflows,
+                        rule.destination.clone(),
+                        accepted,
+                    );
+
+                    // rejected range
+                    *part.get_mut(&rule.category).unwrap() =
+                        *part[&rule.category].start()..=rule.value;
+                } else if *part[&rule.category].start() > rule.value {
+                    // completely accepted range
+                    find_accepted_ranges(
+                        part.clone(),
+                        workflows,
+                        rule.destination.clone(),
+                        accepted,
+                    );
+                }
+            }
+            '<' => {
+                // partly accepted range
+                if part[&rule.category].contains(&rule.value) {
+                    // accepted range
+                    let mut part_accepted = part.clone();
+                    *part_accepted.get_mut(&rule.category).unwrap() =
+                        *part[&rule.category].start()..=rule.value - 1;
+
+                    find_accepted_ranges(
+                        part_accepted,
+                        workflows,
+                        rule.destination.clone(),
+                        accepted,
+                    );
+
+                    // rejected range
+                    *part.get_mut(&rule.category).unwrap() =
+                        rule.value..=*part[&rule.category].end();
+                } else if *part[&rule.category].end() < rule.value {
+                    // completely accepted range
+                    find_accepted_ranges(
+                        part.clone(),
+                        workflows,
+                        rule.destination.clone(),
+                        accepted,
+                    );
+                }
+            }
+            _ => find_accepted_ranges(part.clone(), workflows, rule.destination.clone(), accepted),
+        }
+    }
+}
+
+fn part_2(input: &str) -> usize {
+    let workflows = parse_workflows(input);
+
+    // initial range conditions
+    let part_range = vec![
+        ('x', 1..=4000),
+        ('m', 1..=4000),
+        ('a', 1..=4000),
+        ('s', 1..=4000),
+    ]
+    .into_iter()
+    .collect::<PartRange>();
+
+    let mut accepted = vec![];
+    find_accepted_ranges(part_range, &workflows, "in".to_string(), &mut accepted);
+
+    // calculate the number of distinct combinations of ratings that will be accepted
+    accepted
+        .par_iter()
+        .map(|part_range| {
+            part_range
+                .values()
+                .map(|range| range.clone().count())
+                .product::<usize>()
+        })
+        .sum()
+}
+
 fn main() -> Result<(), Error> {
     let input = Input::new().to_string();
 
     println!("{}", part_1(&input));
+    println!("{}", part_2(&input));
 
     Ok(())
 }
@@ -213,5 +333,10 @@ hdj{m>838:A,pv}
     #[test]
     fn part_1() {
         assert_eq!(super::part_1(INPUT), 19114);
+    }
+
+    #[test]
+    fn part_2() {
+        assert_eq!(super::part_2(INPUT), 167409079868000);
     }
 }
