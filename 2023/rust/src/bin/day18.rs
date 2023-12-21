@@ -3,8 +3,8 @@ use std::io::Error;
 use libaoc::{grid::coordinate::Coordinate, io::input::Input, math::polygon::interior_points};
 
 fn dig(trench: &mut Vec<Coordinate>, direction: char, distance: usize) {
-    let mut current = trench.last().unwrap().clone();
-    for i in 0..distance {
+    let mut current = *trench.last().unwrap();
+    for _ in 0..distance {
         match direction {
             'U' => current += Coordinate::new(0, -1),
             'D' => current += Coordinate::new(0, 1),

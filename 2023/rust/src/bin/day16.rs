@@ -108,7 +108,7 @@ fn count_energised(contraption: &Contraption, beam: Beam) -> usize {
     let mut energised = HashSet::<Beam>::new();
     energised.insert(beam.clone());
 
-    propagate(&contraption, beam, &mut energised);
+    propagate(contraption, beam, &mut energised);
 
     energised
         .iter()
