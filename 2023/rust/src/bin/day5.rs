@@ -4,6 +4,15 @@ use libaoc::io::input::Input;
 
 use rayon::prelude::*;
 
+fn parse_seeds(s: &str) -> Vec<u64> {
+    s.split_once(": ")
+        .unwrap()
+        .1
+        .split_whitespace()
+        .map(|n| n.parse().unwrap())
+        .collect()
+}
+
 fn construct_maps(maps: &[&str]) -> Vec<HashSet<(u64, u64, u64)>> {
     maps.iter()
         .map(|s| {
@@ -23,15 +32,9 @@ fn construct_maps(maps: &[&str]) -> Vec<HashSet<(u64, u64, u64)>> {
 
 fn evaluate_map_single_number(n: &mut u64, map: &HashSet<(u64, u64, u64)>) {
     for (destination_start, source_start, range) in map.iter() {
-        // if *n == 77 {
-        //     println!("{:?}", map);
-        // }
         if *n < *source_start || *n >= *source_start + *range {
             continue;
         }
-        // if *n == 77 {
-        //     println!("passed screening");
-        // }
 
         let diff = *n - *source_start;
         *n = *destination_start + diff;
@@ -46,17 +49,8 @@ fn evaluate_map(numbers: &mut [u64], map: &HashSet<(u64, u64, u64)>) {
 }
 
 fn part_1(input: &str) -> u64 {
-    let mut seeds = input
-        .lines()
-        .next()
-        .unwrap()
-        .split_once(": ")
-        .unwrap()
-        .1
-        .split_whitespace()
-        .map(|n| n.parse().unwrap())
-        .collect::<Vec<u64>>();
-
+    // parse input
+    let mut seeds = parse_seeds(input.lines().next().unwrap());
     let maps = construct_maps(&input.split("\n\n").collect::<Vec<&str>>()[1..]);
 
     maps.iter().for_each(|map| evaluate_map(&mut seeds, map));
@@ -65,19 +59,11 @@ fn part_1(input: &str) -> u64 {
 }
 
 fn part_2(input: &str) -> u64 {
-    let seeds = input
-        .lines()
-        .next()
-        .unwrap()
-        .split_once(": ")
-        .unwrap()
-        .1
-        .split_whitespace()
-        .map(|n| n.parse().unwrap())
-        .collect::<Vec<u64>>();
-
+    // parse input
+    let seeds = parse_seeds(input.lines().next().unwrap());
     let maps = construct_maps(&input.split("\n\n").collect::<Vec<&str>>()[1..]);
 
+    // brute force
     seeds
         .chunks_exact(2)
         .map(|chunk| {
